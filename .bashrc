@@ -43,13 +43,13 @@ fi
 
 ### Functions
 # get current branch in git repo
-function parse_git_branch() {
+function __parse_git_branch() {
   BRANCH=$( git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/' )
   [[ ! "${BRANCH}" == "" ]] && STAT=$( parse_git_dirty ) && echo "[${BRANCH}${STAT}]"
 }
 
 # get current status of git repo
-function parse_git_dirty {
+function __parse_git_dirty {
   status=$( git status 2>&1 | tee )
   dirty=$( echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?" )
   untracked=$( echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?" )
@@ -78,7 +78,13 @@ function parse_git_dirty {
 }
 
 # My aliases
+alias ls='ls --color=auto'
 alias ll='ls -l'
+
+# editor
+export EDITOR=vim
+export VISUAL=vim
+
 
 # for terraform
 alias terraform-hook='for i in *.tf; do terraform fmt $i; done && terraform-docs --sort-inputs-by-required md ./ > README.md'
@@ -91,11 +97,10 @@ export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$PATH
 
-
 # Vars
 
 ## bash prompt
-export PS1="\[\e[33m\]\u\[\e[m\]\[\e[36m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]\[\e[31m\]:\[\e[m\]\[\e[36m\]\W\[\e[m\]\[\e[31;43m\]\`parse_git_branch\`\[\e[m\]\[\e[32m\]\\$\[\e[m\] "
+export PS1="\[\e[33m\]\u\[\e[m\]\[\e[36m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]\[\e[31m\]:\[\e[m\]\[\e[36m\]\W\[\e[m\]\[\e[31;43m\]\$(__parse_git_branch)\[\e[m\]\[\e[32m\]\\$\[\e[m\] "
 
 ## colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
