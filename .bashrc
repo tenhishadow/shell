@@ -45,7 +45,7 @@ fi
 # get current branch in git repo
 function __parse_git_branch() {
   BRANCH=$( git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/' )
-  [[ ! "${BRANCH}" == "" ]] && STAT=$( parse_git_dirty ) && echo "[${BRANCH}${STAT}]"
+  [[ ! "${BRANCH}" == "" ]] && STAT=$( __parse_git_dirty ) && echo "[${BRANCH}${STAT}]"
 }
 
 # get current status of git repo
